@@ -242,3 +242,19 @@ removes that ~2px overflow with real margin (measured ~78px narrower total acros
   font-family: var(--sans); font-variant-numeric: normal; font-weight: 600;
   border-radius: 4px; padding-left: 10px; white-space: nowrap;
 }
+
+/* --- nfl_web.py's division breakdown (AFC left col / NFC right col, 4 division tables each) --
+mirrors the PDF's own page-2 layout (Analytics/nfl/Package/nfl_report.py's _draw_division_block).
+Falls back to a single column on narrow screens since two side-by-side .report-table-wrap's own
+horizontal scroll would otherwise fight the page's vertical scroll for space. */
+.division-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+@media (max-width: 720px) { .division-grid { grid-template-columns: 1fr; } }
+.division-block { margin-bottom: 22px; }
+.division-block h3 {
+  font-size: 13px; font-weight: 700; margin: 0 0 8px; padding: 6px 10px; border-radius: 4px;
+  background: var(--ink); color: var(--page);
+}
+/* .report-table's 720px min-width (below) is tuned for the CFB conference tables' 13 columns --
+wrong for a division table's 4 narrow columns, which forced it wider than its .division-grid
+column and clipped it at the page edge (confirmed live via screenshot before this override). */
+.division-block .report-table { min-width: 0; }
