@@ -131,6 +131,15 @@
         seeding tiebreaks use win total plus random jitter rather than the real NFL tiebreaker
         cascade (head-to-head, division record, strength of victory, etc.).
       </p>
+      <p class="subhead">
+        Playoff-make probability gets one more step: a post-hoc calibration correction. Checked
+        against 26 years of real playoff outcomes, the raw simulated probability was consistently
+        overconfident &mdash; teams the simulation gave roughly 70% actually made the playoffs
+        about 49% of the time historically. A correction fit against those real outcomes (not
+        against sportsbook lines) pulls playoff-make probabilities back toward that real base
+        rate. Deliberately scoped to playoff-make odds alone; Super Bowl-round odds don't have an
+        equivalent real-history validation yet, so they're left as the simulation's raw output.
+      </p>
     </div>
 
     <div class="card">
