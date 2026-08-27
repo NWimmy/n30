@@ -20,21 +20,22 @@
       <h2>Composite rating</h2>
       <p class="card-sub">What goes into each team's number</p>
       <p class="subhead">
-        Every team gets a composite rating built from a weighted blend of six real inputs:
+        Every team gets a composite rating built from a weighted blend of seven real inputs:
         offensive and defensive EPA (expected points added) per play, split by pass and rush,
-        net special-teams EPA, and quarterback quality. The four EPA splits are opponent-adjusted
-        &mdash; a two-way regression that solves for each team's real offensive and defensive
-        strength simultaneously from every play of the season, so a team that happened to face a
-        slate of bad defenses doesn't get an inflated number with zero correction &mdash; and
-        blended across the two most recent seasons (more recent weighted higher) rather than
-        judged on one season's noisy sample alone.
+        net special-teams EPA, quarterback quality, and returning production &mdash; how much of
+        last season's skill-position production volume is still on the roster. The four EPA splits
+        are opponent-adjusted &mdash; a two-way regression that solves for each team's real
+        offensive and defensive strength simultaneously from every play of the season, so a team
+        that happened to face a slate of bad defenses doesn't get an inflated number with zero
+        correction &mdash; and blended across the two most recent seasons (more recent weighted
+        higher) rather than judged on one season's noisy sample alone.
       </p>
       <p class="subhead">
         Weights are fit with ridge regression against real next-season win totals, then checked
         with leave-one-season-out cross-validation: refit on every season but one, scored on the
         held-out season, repeated for every season in the window. A fit that only looks good
         in-sample and falls apart out-of-sample gets rejected rather than trusted. Ridge specifically
-        (instead of an ordinary regression) because two of the six inputs &mdash; passing offense
+        (instead of an ordinary regression) because two of the seven inputs &mdash; passing offense
         and quarterback quality &mdash; measure a genuinely overlapping thing; ridge splits credit
         between them properly instead of arbitrarily favoring one.
       </p>
@@ -67,14 +68,28 @@
         punter, or coordinator &mdash; for older seasons to add anything but noise.
       </p>
       <p class="subhead">
+        Returning production &mdash; what share of last season's quarterback/running-back/
+        receiver production volume is still on this season's roster &mdash; was added as the
+        seventh input after a real, held-out accuracy gain, and unlike some other candidates its
+        fitted weight was stable and correctly signed, matching its own honest correlation with
+        wins. A related idea, average roster age (and years of NFL experience), was tested
+        alongside it and produced the single largest raw accuracy gain of anything tried &mdash;
+        but was left out anyway: that input's real-world correlation with wins was essentially
+        zero, while the fitted model gave it a large, backwards-signed weight, the same kind of
+        unstable fitting artifact that sank the injury-report candidate below. A tempting number
+        that doesn't survive a sanity check against its own honest correlation isn't trusted here.
+      </p>
+      <p class="subhead">
         Player-level running back and receiver production, plus offensive-line pass-protection
         proxies (sacks and QB hits allowed), were all tested as additional inputs and found
         redundant with the team-level EPA splits already in the model &mdash; they mostly
-        re-measure signal the model already has, rather than add new information.
+        re-measure signal the model already has, rather than add new information. Real turnover
+        margin and a same-season head-coach-change flag were also tested and found similarly
+        unhelpful once the other inputs were already accounted for.
       </p>
       <p class="subhead">
         A roster-durability input (real weekly injury-report designations) showed a real
-        improvement on its own, but once combined with the other six inputs it produced an
+        improvement on its own, but once combined with the other inputs it produced an
         unstable, counterintuitive weight &mdash; the fitted model would have slightly penalized
         healthier teams, backwards from that input's own honest real-world relationship to wins.
         Read as a fitting artifact on a modest sample rather than a real effect, and left out.
@@ -95,7 +110,7 @@
       </p>
       <p class="subhead">
         We also checked a genuine question of interest: does "defense wins championships" hold
-        up? Refitting the same six weights against real historical PLAYOFF wins instead of
+        up? Refitting the same weights against real historical PLAYOFF wins instead of
         regular-season win total found the opposite &mdash; offense, especially quarterback play,
         matters MORE for championship success, not less. A real, interesting finding, but a pure
         diagnostic: the live model stays fit against regular-season wins, which is what its own
