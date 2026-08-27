@@ -215,9 +215,12 @@ within-CFB-section navigation. --- */
 rule-of-thumb name) -- the SVG itself lives inline in
 cfb_web._top_bar / nfl_web._top_bar (both build_*_page functions share ONE mark definition,
 copy-pasted between the two packages same as every other cross-project duplication this codebase
-already has, see CLAUDE.md). Color (#4C8EFF) and weight (stroke-width 9 / fill-opacity 0.4,
-tuned for legibility at 16px favicon size) are a first pass, explicitly not finalized -- deferred
-pending live review on the actual site, per user request, not a placeholder that was overlooked. */
+already has, see CLAUDE.md). Uses var(--pos) for its color (this file's existing accent, #2a78d6
+light / #3987e5 dark -- confirmed the same value the hand-authored root landing page already uses
+for its own accent), not a new hardcoded color, so the mark automatically matches the rest of the
+site and its own theme. Weight (stroke-width 9 / fill-opacity 0.4, tuned for legibility at 16px
+favicon size) is a first pass, explicitly not finalized -- deferred pending live review on the
+actual site, per user request, not a placeholder that was overlooked. */
 .home-mark { width: 15px; height: 15px; flex: none; }
 .snapshot-picker {
   font-family: var(--mono); font-size: 11.5px; color: var(--ink);
