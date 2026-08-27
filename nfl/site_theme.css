@@ -1,4 +1,4 @@
-/* Shared theme across every page of the public Analytics site's CFB section (and this local
+/* Shared theme across every page of the public N30 site's CFB section (and this local
 gambling dashboard) -- "warm paper" light / "turf-at-night" dark, prefers-color-scheme aware with
 a [data-theme] override for hosts that set one explicitly. Originally inline in
 model_vs_market_template.html; extracted 2026-08-18 so the new HTML report pages
