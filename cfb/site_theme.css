@@ -257,8 +257,11 @@ difference between Model and Team Schedules"). */
   padding-bottom: 16px;
   border-bottom: 1px solid var(--gridline);
 }
+/* Every tab gets the SAME symmetric padding, including the first (AP Top 25) -- a first-child
+padding-left:0 override was tried initially to align it flush with the page's own left margin,
+but that leaves it asymmetric next to every other tab's padding-on-both-sides, reading as
+off-center rather than consistent. Confirmed live 2026-08-30 (user-reported). */
 .nav-strip.section-nav a { padding: 3px 22px; border-right: 1px solid var(--gridline); }
-.nav-strip.section-nav a:first-child { padding-left: 0; }
 .nav-strip.section-nav a:last-child { border-right: none; }
 
 .report-table-wrap { overflow-x: auto; }
