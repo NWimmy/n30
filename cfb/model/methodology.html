@@ -1,0 +1,120 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Methodology: 2026 CFB Model</title>
+<link rel="stylesheet" href="site_theme.css">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MiA3MiI+PHBhdGggZD0iTTQsNjAgQzE0LDU5IDIwLDU1IDI2LDQ0IEMzMCwzNiAzMiwxMCAzNiwxMCBDNDAsMTAgNDIsMzYgNDYsNDQgQzUyLDU1IDU4LDU5IDY4LDYwIEw2OCw2MCBMNCw2MCBaIiBmaWxsPSIjMkE3OEQ2IiBmaWxsLW9wYWNpdHk9IjAuNCIgc3Ryb2tlPSJub25lIj48L3BhdGg+PHBhdGggZD0iTTQsNjAgQzE0LDU5IDIwLDU1IDI2LDQ0IEMzMCwzNiAzMiwxMCAzNiwxMCBDNDAsMTAgNDIsMzYgNDYsNDQgQzUyLDU1IDU4LDU5IDY4LDYwIiBmaWxsPSJub25lIiBzdHJva2U9IiMyQTc4RDYiIHN0cm9rZS13aWR0aD0iOSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48L3BhdGg+PC9zdmc+">
+
+<div class="viz-root">
+  <div class="wrap">
+    <div class="top-bar"><a href="../../index.html" class="home-link"><svg class="home-mark" viewBox="0 0 72 72" aria-hidden="true"><path d="M4,60 C14,59 20,55 26,44 C30,36 32,10 36,10 C40,10 42,36 46,44 C52,55 58,59 68,60 L68,60 L4,60 Z" fill="var(--pos)" fill-opacity="0.4" stroke="none"></path><path d="M4,60 C14,59 20,55 26,44 C30,36 32,10 36,10 C40,10 42,36 46,44 C52,55 58,59 68,60" fill="none" stroke="var(--pos)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"></path></svg>N30</a><select class="snapshot-picker" onchange="window.location.href=this.value" aria-label="Jump to a different week's snapshot"><option value="../../cfb/index.html" selected>Current</option><option value="../../cfb/archive/preseason/index.html">Preseason</option></select></div>
+    <p class="eyebrow">2026 CFB preseason composite ratings</p>
+    <h1>How this model works</h1>
+    <p class="subhead">
+      A from-scratch composite team rating, an Elo-based season simulator, and a devigged
+      sportsbook comparison &mdash; built and continuously validated against real historical
+      outcomes rather than hand-picked. Model-vs-market dashboard:
+      <a href="gambling.html">where the model and the sportsbooks disagree most</a>.
+    </p>
+
+    <nav class="nav-strip"><a href="index.html">Top 25</a><a href="conference/acc.html">ACC</a><a href="conference/american-athletic.html">AAC</a><a href="conference/big-12.html">Big 12</a><a href="conference/big-ten.html">Big Ten</a><a href="conference/conference-usa.html">C-USA</a><a href="conference/fbs-independents.html">Ind.</a><a href="conference/mid-american.html">MAC</a><a href="conference/mountain-west.html">MWC</a><a href="conference/pac-12.html">Pac-12</a><a href="conference/sec.html">SEC</a><a href="conference/sun-belt.html">Sun Belt</a></nav>
+
+    <div class="card">
+      <h2>Composite rating</h2>
+      <p class="card-sub">What goes into each team's number</p>
+      <p class="subhead">
+        Every FBS team gets a composite rating built from a weighted blend of real inputs:
+        recency-weighted SP+ (Bill Connelly's advanced efficiency rating), recruiting and
+        transfer-portal talent, returning offensive and defensive production, head coach career
+        win percentage, quarterback quality (real play-by-play production, not a preseason
+        guess &mdash; see below), special-teams efficiency, and NFL draft departure impact.
+      </p>
+      <p class="subhead">
+        Weights are not hand-picked. Each input is validated with a residual-signal test &mdash;
+        does it predict a team's rating trajectory <i>after controlling for every other input</i>,
+        or is it just correlated noise that another input already explains? Inputs that fail this
+        test are kept in the data (so they're still visible for reference) but weighted at zero
+        rather than removed outright. Structural constants &mdash; home-field advantage, a
+        bye-week rest bonus, a "trap game" letdown penalty, and a per-conference strength
+        adjustment &mdash; are fit separately against 10+ years of real FBS game results using a
+        regularized maximum-likelihood approach (a shrinkage prior keeps a thin sample from
+        overfitting to a fluke), not guessed.
+      </p>
+      <p class="subhead">
+        Every backtested constant is also checked with leave-one-season-out cross-validation:
+        refit on all but one season, then scored on the held-out season, repeated for every
+        season in the window. A fit that only looks good in-sample and falls apart out-of-sample
+        gets flagged rather than trusted.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Quarterback production</h2>
+      <p class="card-sub">Real play-by-play data, not a name you'd recognize from ESPN</p>
+      <p class="subhead">
+        QB quality is built from actual per-play production data (points-per-play added),
+        play-count-weighted so a QB's most-played games count for more than mop-up duty, with
+        garbage-time snaps down-weighted separately. A transfer QB's production at their old
+        school carries over with a fitted adjustment (real transfers, on average, outperform a
+        flat continuation of their raw numbers); a genuinely unproven or backup-caliber starter
+        gets a modest penalty instead. Every adjustment here was tested against real historical
+        outcomes before being applied, the same way every other input is.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Season simulation</h2>
+      <p class="card-sub">How preseason ratings turn into playoff odds</p>
+      <p class="subhead">
+        The composite rating anchors each team's starting Elo. Every scheduled FBS game for the
+        season is simulated 10,000 times: each simulated result updates both teams' Elo (scaled
+        by real margin of victory, not just win/loss), which then feeds into the next game on
+        that team's schedule &mdash; so a team's playoff odds reflect its full remaining
+        schedule's difficulty, not just its preseason number in isolation. Already-completed
+        real games use their actual final score rather than being simulated.
+      </p>
+      <p class="subhead">
+        Conference champions are determined by conference win percentage (Elo-tiebroken), with
+        the top two finishers playing a simulated title game. <b>This is a known simplification,
+        not a claim of matching every conference's real bylaws</b> &mdash; it doesn't model
+        divisions/pods where a conference still uses them, or each conference's actual
+        tiebreaker order (head-to-head, common opponents, committee ranking, etc.). The 12-team
+        CFP field then seeds by rating: the 5 highest-rated conference champions get auto bids
+        (4 Power Conference champions plus the highest-rated Group of 5 champion), the remaining
+        7 spots go to the highest-rated non-champions, and the top 4 teams in the full field get
+        a first-round bye &mdash; matching the CFP's real 2026 format.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Market comparison</h2>
+      <p class="card-sub">What "Mkt" columns mean, and their real limits</p>
+      <p class="subhead">
+        Market odds are hand-compiled, point-in-time sportsbook lines (FanDuel/BetMGM), devigged
+        to strip out the book's built-in margin before comparing against this model's own fair
+        odds. A book's full board is normalized so its listed odds sum to exactly 100%; where two
+        books quote the same team, their two devigged numbers are averaged. These are snapshots,
+        not a live feed &mdash; a line quoted here can move well before you'd see it reflected on
+        this page again, and not every team is quoted by every book, so "--" means no market line
+        was found, not a 0% model probability.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Honest caveats</h2>
+      <p class="card-sub">What this model is and isn't</p>
+      <p class="subhead">
+        This is a preseason research model for one person's own use, published for interest, not
+        a professional betting product. It has known simplifications (the conference-title proxy
+        above is one; there are others) that are being actively investigated and refined, not
+        hidden. It is not betting advice, carries no guarantee of predictive accuracy, and a
+        favorable "edge" against a market line is not a guaranteed win rate. As the real season
+        plays out, several inputs (SP+, QB production, Elo) update to reflect real in-season
+        results rather than staying frozen at their preseason values.
+      </p>
+    </div>
+
+    <p class="foot">
+      <a href="index.html">&larr; Back to Top 25</a>
+    </p>
+  </div>
+</div>
