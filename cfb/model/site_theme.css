@@ -55,6 +55,11 @@ body { margin: 0; }
   background: var(--page);
   color: var(--ink);
   padding: 36px 20px 64px;
+  /* min-height, not height -- a sparse page (e.g. the Team Schedules chooser, just a picker
+  dropdown with no table) is shorter than the viewport, and without this its background box
+  ends where its content does, leaving the browser's default white showing below it instead of
+  the theme's --page color. Confirmed live 2026-08-30. */
+  min-height: 100vh;
 }
 .wrap { max-width: 980px; margin: 0 auto; }
 
