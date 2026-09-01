@@ -364,33 +364,3 @@ Round-of-12 card so the two stack cleanly inside one .bracket-matchup. */
 .bracket-tbd .bracket-tbd-label { font-family: var(--mono); font-size: 10.5px; }
 .bracket-champ-slot { display: flex; align-items: center; gap: 10px; }
 .bracket-trophy { font-size: 26px; line-height: 1; flex: none; }
-
-/* --- NFL Playoff Bracket page (nfl_web.build_bracket_page) -- same design language as the CFP
-Bracket above (reuses .bracket-round-head/.bracket-col-slots/.bracket-gutter/.bracket-matchup/
-.bracket-card/.bracket-tbd/.bracket-trophy unchanged). First version (2026-08-30) was one
-13-track "hourglass" grid -- AFC and NFC mirrored into a shared center Super Bowl -- but that
-forced horizontal scrolling on a normal-width screen (7 tracks x 150px+ each). Redesigned the
-same day, per explicit user request ("I dont want to have to scroll left to right... I want the
-full bracket to be on that one page"): three independent, vertically STACKED cards -- AFC's own
-3-round bracket (Wild Card -> Divisional -> Conference Championship), a standalone Super Bowl
-card, then NFC's own 3-round bracket below it -- each only 5 grid tracks wide (3 rounds + 2
-connector gutters), comfortably under .wrap's 980px max-width with zero horizontal scroll. Both
-conferences read left-to-right identically now (no RTL mirroring needed), so
-nfl_web._conference_bracket_columns builds ONE shared HTML shape for both. */
-.bracket-tree-nfl {
-  display: grid;
-  grid-template-columns: minmax(170px, 1fr) 36px minmax(170px, 1fr) 36px minmax(170px, 1fr);
-  grid-template-rows: auto 300px;
-  padding: 4px 2px 20px; column-gap: 12px;
-}
-/* Standalone Super Bowl card, between the AFC and NFC bracket cards -- centered content, wider
-team-name cards than a squeezed-into-a-grid-cell .bracket-matchup gets, since this card has a
-whole row's width to itself. */
-.bracket-superbowl-card { text-align: center; }
-.bracket-superbowl-meta {
-  font-family: var(--mono); font-size: 11.5px; color: var(--ink-sec); margin: 0 0 16px;
-}
-.bracket-superbowl-matchup { display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 10px; }
-.bracket-superbowl-matchup .bracket-card {
-  border: 1px solid var(--border); border-radius: 6px; background: var(--surface); min-width: 170px; justify-content: center;
-}
