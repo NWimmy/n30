@@ -233,6 +233,14 @@ actual site, per user request, not a placeholder that was overlooked. */
   padding: 4px 8px; cursor: pointer;
 }
 
+/* --- Weekly Schedule's ranked-only filter checkbox (cfb_web.build_weekly_schedule_page,
+CFB only -- NFL has no ranking poll to filter by) --- */
+.ranked-filter {
+  display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-sec);
+  margin-bottom: 14px; cursor: pointer; user-select: none;
+}
+.ranked-filter input { cursor: pointer; }
+
 /* --- additions for cfb_web.py's multi-page report tables (Top 25 / conference pages) --- */
 .nav-strip {
   display: flex; flex-wrap: wrap; gap: 6px 10px; margin: 0 0 22px;
