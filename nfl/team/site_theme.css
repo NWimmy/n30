@@ -17,6 +17,11 @@ model_vs_market_template.html; extracted 2026-08-18 so the new HTML report pages
   --neg:         #e34948;
   --pos-soft:    rgba(42,120,214,0.10);
   --neg-soft:    rgba(227,73,72,0.10);
+  /* --good: a dedicated "this team's number is better" green, distinct from --pos (blue --
+  already means something else project-wide: "model more bullish than the market") -- added for
+  the Head-to-Head season-stats table (cfb_head_to_head.py/nfl_head_to_head.py), the first place
+  this project highlights a better-of-two VALUE rather than a model-vs-market direction. */
+  --good:        #2a8f4e;
 }
 @media (prefers-color-scheme: dark) {
   .viz-root {
@@ -33,17 +38,20 @@ model_vs_market_template.html; extracted 2026-08-18 so the new HTML report pages
     --neg:         #e66767;
     --pos-soft:    rgba(57,135,229,0.14);
     --neg-soft:    rgba(230,103,103,0.14);
+    --good:        #4caf72;
   }
 }
 :root[data-theme="dark"] .viz-root {
   --page: #0c110e; --surface: #141a16; --ink: #f4f6f2; --ink-sec: #a8b0a4; --ink-muted: #7c847a;
   --gridline: #263029; --baseline: #3a453e; --border: rgba(244,246,242,0.10);
   --pos: #3987e5; --neg: #e66767; --pos-soft: rgba(57,135,229,0.14); --neg-soft: rgba(230,103,103,0.14);
+  --good: #4caf72;
 }
 :root[data-theme="light"] .viz-root {
   --page: #f6f3ec; --surface: #fffdf8; --ink: #17140f; --ink-sec: #676151; --ink-muted: #948d7a;
   --gridline: #e6e0d2; --baseline: #cdc4ac; --border: rgba(23,20,15,0.10);
   --pos: #2a78d6; --neg: #e34948; --pos-soft: rgba(42,120,214,0.10); --neg-soft: rgba(227,73,72,0.10);
+  --good: #2a8f4e;
 }
 
 * { box-sizing: border-box; }
@@ -402,3 +410,102 @@ whole row's width to itself. */
 .bracket-superbowl-matchup .bracket-card {
   border: 1px solid var(--border); border-radius: 6px; background: var(--surface); min-width: 170px; justify-content: center;
 }
+
+/* --- Head-to-Head team comparison (cfb_head_to_head.py / nfl_head_to_head.py) -- pick any two
+teams via client-side <select>s (no server, so every pairwise combination can't be pre-rendered
+the way a per-team page can -- CFB alone is ~9,180 unordered pairs) and see their rating
+components plus a projected neutral-field spread. Added 2026-11-13 per user request. The
+per-feature bars below deliberately reuse .chart-row/.row-bar/.row-plot/.zero-line as-is (two
+stacked mini bar-rows per feature, one per team, each exactly the same "deviation from zero"
+shape those classes already draw for model_vs_market.html's single-team charts) rather than
+inventing a new mirrored-bar widget -- only the picker/team-card/spread-tile chrome around them
+is genuinely new here. */
+.h2h-picker-row {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 18px; flex-wrap: wrap;
+}
+.h2h-team-select { flex: 1 1 220px; min-width: 0; }
+.h2h-team-select select {
+  width: 100%; font-family: var(--sans); font-size: 14px; font-weight: 600; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+  padding: 8px 10px; cursor: pointer;
+}
+.h2h-swap {
+  flex: none; font-family: var(--mono); font-size: 11.5px; color: var(--ink-sec);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 5px;
+  padding: 7px 12px; cursor: pointer;
+}
+.h2h-swap:hover { color: var(--ink); border-color: var(--pos); }
+
+.h2h-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px; }
+.h2h-team-card {
+  display: flex; align-items: center; gap: 10px; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px;
+}
+.h2h-team-card img { width: 38px; height: 38px; object-fit: contain; flex: none; }
+.h2h-team-name { font-weight: 700; font-size: 15px; line-height: 1.25; }
+.h2h-team-meta { font-family: var(--mono); font-size: 11px; color: var(--ink-sec); margin-top: 1px; }
+
+.h2h-spread-tile { text-align: center; padding: 20px 10px 22px; }
+.h2h-spread-headline { font-size: 19px; font-weight: 700; margin-bottom: 3px; }
+.h2h-spread-sub { font-family: var(--mono); font-size: 12px; color: var(--ink-sec); }
+.h2h-winprob-row { display: flex; justify-content: center; gap: 36px; margin-top: 16px; }
+.h2h-winprob { text-align: center; }
+.h2h-winprob-pct {
+  font-family: var(--mono); font-size: 23px; font-weight: 700; font-variant-numeric: tabular-nums;
+}
+.h2h-winprob-team { font-size: 11.5px; color: var(--ink-sec); margin-top: 2px; }
+
+.h2h-feature-block { margin-bottom: 18px; }
+.h2h-feature-block:last-child { margin-bottom: 4px; }
+.h2h-feature-head {
+  display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px;
+}
+.h2h-feature-label { font-size: 12.5px; font-weight: 600; color: var(--ink); }
+.h2h-feature-weight { font-family: var(--mono); font-size: 10.5px; color: var(--ink-muted); }
+.h2h-feature-block .chart-row { height: 20px; }
+.h2h-feature-block .row-label { width: 92px; flex: 0 0 92px; font-size: 11.5px; }
+.h2h-feature-block .row-bar { top: 3px; height: 14px; }
+.h2h-feature-block .row-value { height: 20px; }
+
+/* "Weight % of model" row -- a third row per feature block, ABOVE the two team rows (context --
+how much this input actually counts -- before the team-vs-team comparison below it). Scale is
+the real 0-100%-of-the-whole-model domain (every weight already sums to 1.0 across all inputs),
+not the z-score domain the team rows share -- a dashed outline (h2h-weight-outline) spans that
+entire 100% span so a feature's real share reads against the WHOLE pie, with the filled bar
+inside it showing only its own real fraction. Neutral --ink-muted fill, not a team color, since
+this isn't either team's own number. */
+.h2h-weight-row { height: 26px; margin-bottom: 2px; }
+.h2h-weight-row .row-label {
+  font-size: 10px; color: var(--ink-muted); white-space: normal; line-height: 1.05;
+}
+.h2h-weight-outline {
+  position: absolute; top: 3px; height: 14px; border: 1px dashed var(--baseline);
+  border-radius: 4px; box-sizing: border-box; pointer-events: none;
+}
+
+/* Season-stats comparison table (real points/yards/turnover-margin, added alongside the
+rating-component bars above per explicit user follow-up request) -- plain left/right numbers,
+not z-score bars, since these are literal box-score units on very different scales (points vs.
+yards vs. a turnover count) that a shared bar domain couldn't meaningfully compare anyway. */
+.h2h-stat-table { width: 100%; border-collapse: collapse; }
+.h2h-stat-table tr + tr { border-top: 1px solid var(--gridline); }
+.h2h-stat-table td { padding: 9px 4px; font-size: 13px; }
+.h2h-stat-val { font-family: var(--mono); font-variant-numeric: tabular-nums; width: 30%; }
+.h2h-stat-val.left { text-align: right; padding-right: 14px; }
+.h2h-stat-val.right { text-align: left; padding-left: 14px; }
+.h2h-stat-label { text-align: center; color: var(--ink-sec); font-size: 11.5px; white-space: nowrap; }
+.h2h-stat-val.better { font-weight: 700; color: var(--good); }
+/* National rank (out of all FBS teams), added 2026-11-14 per user request -- deliberately NOT
+colored/bolded like .better above: a rank is context about the WHOLE country, independent of
+which team wins the head-to-head comparison it sits next to. */
+.h2h-stat-rank { color: var(--ink-muted); font-weight: 400; font-size: 11px; }
+/* Header row identifying which column belongs to which team, by that team's own real color --
+the number rows themselves have no room to repeat this every line without getting busy, so it's
+stated once at the top instead. */
+.h2h-stat-header td { padding-bottom: 12px; }
+.h2h-stat-chip {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700;
+  font-family: var(--sans); text-transform: none;
+}
+.h2h-stat-val.right .h2h-stat-chip { flex-direction: row-reverse; }
+.h2h-stat-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
