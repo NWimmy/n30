@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Methodology: 2026 NFL Model</title>
-<link rel="stylesheet" href="site_theme.css?v=20261117162243">
+<link rel="stylesheet" href="site_theme.css?v=20261118012745">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MiA3MiI+PHBhdGggZD0iTTQsNjAgQzE0LDU5IDIwLDU1IDI2LDQ0IEMzMCwzNiAzMiwxMCAzNiwxMCBDNDAsMTAgNDIsMzYgNDYsNDQgQzUyLDU1IDU4LDU5IDY4LDYwIEw2OCw2MCBMNCw2MCBaIiBmaWxsPSIjMkE3OEQ2IiBmaWxsLW9wYWNpdHk9IjAuNCIgc3Ryb2tlPSJub25lIj48L3BhdGg+PHBhdGggZD0iTTQsNjAgQzE0LDU5IDIwLDU1IDI2LDQ0IEMzMCwzNiAzMiwxMCAzNiwxMCBDNDAsMTAgNDIsMzYgNDYsNDQgQzUyLDU1IDU4LDU5IDY4LDYwIiBmaWxsPSJub25lIiBzdHJva2U9IiMyQTc4RDYiIHN0cm9rZS13aWR0aD0iOSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48L3BhdGg+PC9zdmc+">
 
 <div class="viz-root">
@@ -11,9 +11,9 @@
     <h1>How this model works</h1>
     <p class="subhead">
       A composite team rating built from real prior-season play-by-play, an Elo-based season
-      and playoff simulator, and a devigged sportsbook comparison &mdash; every input and every
+      and playoff simulator, and a live prediction-market comparison &mdash; every input and every
       constant validated against real historical outcomes before being trusted, not hand-picked.
-      Model-vs-market dashboard: <a href="gambling.html">where the model and the sportsbooks
+      Model-vs-market dashboard: <a href="gambling.html">where the model and the market
       disagree most</a>. Want to compare two specific teams? <a href="head_to_head.html">
       Head-to-Head</a> shows their rating components side by side and the projected
       neutral-field spread.
@@ -137,13 +137,12 @@
         cascade (head-to-head, division record, strength of victory, etc.).
       </p>
       <p class="subhead">
-        Playoff-make probability gets one more step: a post-hoc calibration correction. Checked
-        against 26 years of real playoff outcomes, the raw simulated probability was consistently
-        overconfident &mdash; teams the simulation gave roughly 70% actually made the playoffs
-        about 49% of the time historically. A correction fit against those real outcomes (not
-        against sportsbook lines) pulls playoff-make probabilities back toward that real base
-        rate. Deliberately scoped to playoff-make odds alone; Super Bowl-round odds don't have an
-        equivalent real-history validation yet, so they're left as the simulation's raw output.
+        Playoff-make probability is the simulation's own output, with no extra correction. That
+        was checked directly: replaying 2003-2025 from every point in the season (preseason through
+        week 16) with real playoff seeding, the raw simulated probability already matched who
+        actually made the playoffs &mdash; teams it put at 1% or below never made it, teams at 99%
+        or above always did. An earlier calibration that pulled these odds toward 50% was removed
+        in November 2026 after this check showed it made them less accurate, not more.
       </p>
     </div>
 
@@ -151,12 +150,11 @@
       <h2>Market comparison</h2>
       <p class="card-sub">What "Mkt" columns mean, and their real limits</p>
       <p class="subhead">
-        Market odds are hand-compiled, point-in-time sportsbook lines, devigged to strip out the
-        book's built-in margin before comparing against this model's own fair odds &mdash; each
-        team's playoff line devigged against its own two-way make/miss pair, the Super Bowl board
-        normalized as a whole so all 32 teams' odds sum to 100%. These are snapshots, not a live
-        feed &mdash; a line quoted here can move well before you'd see it reflected on this page
-        again, and "--" means no market line was found, not a 0% model probability.
+        Market odds come from Kalshi, a regulated prediction-market exchange, pulled
+        automatically at every weekly update. A Kalshi contract pays $1 if the team does it, so its
+        price is a probability; the midpoint of each team's bid and ask is used, with no sportsbook
+        vig to strip. Teams eliminated or clinched read as 0% or 100%. Prices still move between
+        updates, and "--" means the market was too thin to price, not a 0% model probability.
       </p>
     </div>
 
