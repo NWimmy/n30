@@ -645,3 +645,28 @@ which is what the composite-freeze scraper reads. NFL team cells are already abb
   .report-table td.team-accent[data-abbr] .tn-full { display: none; }
   .report-table td.team-accent[data-abbr]::after { content: attr(data-abbr); }
 }
+
+/* Weekly Schedule on phones (2026-11-17): Home + Away pinned while the prediction / Kalshi
+columns scroll sideways, same idea as .sticky-team on the Model tables. CFB team cells carry
+data-abbr ("#7 MIA") so the pinned pair stays narrow; NFL cells are already team codes. Phone-
+only: on desktop every schedule table fits without scrolling. */
+@media (max-width: 640px) {
+  .report-table.sticky-matchup th:nth-child(1), .report-table.sticky-matchup td:nth-child(1) {
+    position: sticky; left: 0; z-index: 2; width: 74px; min-width: 74px; max-width: 74px;
+  }
+  .report-table.sticky-matchup th:nth-child(2), .report-table.sticky-matchup td:nth-child(2) {
+    position: sticky; left: 74px; z-index: 2; padding-right: 10px;
+    box-shadow: 1px 0 0 var(--baseline), 6px 0 6px -4px rgba(0, 0, 0, 0.25);
+  }
+  .report-table.sticky-matchup th:nth-child(1), .report-table.sticky-matchup th:nth-child(2) {
+    background: var(--surface);
+  }
+}
+
+/* Weekly Schedule: Mkt Win % / Model Line / Mkt Line (columns 8-10, header + values) left-
+aligned, per user request 2026-11-17 -- "OSU -6.8" / "-5.5" / "65.0" read more naturally from a
+common left edge than right-aligned. Scoped to .sticky-matchup, the class only the two Weekly
+Schedule tables carry, whose column order is identical on both sites. */
+.report-table.sticky-matchup th:nth-child(n+8):nth-child(-n+10),
+.report-table.sticky-matchup td:nth-child(n+8):nth-child(-n+10) { text-align: left; padding-left: 12px; }
+/* padding-left: left-aligned, Mkt Win % otherwise sat flush against the shaded Win % cell. */
